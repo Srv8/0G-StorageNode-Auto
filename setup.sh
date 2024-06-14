@@ -2,8 +2,11 @@
 
 # Function to prompt user for input and store it in .env file
 function prompt_and_store_env {
-    read -p "$1: " value
-    echo "$2=$value" >> .env
+    local prompt_message="$1"
+    local env_key="$2"
+
+    read -p "$prompt_message: " value
+    echo "$env_key=\"$value\"" >> .env
 }
 
 # Update package lists
@@ -27,10 +30,8 @@ echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.profile
 source ~/.profile
 
 # Clone the repository
-git clone -b v0.3.0 https://github.com/0glabs/0g-storage-node.git
-
-# Navigate into the cloned directory
-cd 0g-storage-node
+git clone -b v0.3.0 https://github.com/0glabs/0G-StorageNode-Auto.git
+cd 0G-StorageNode-Auto/0g-storage-node
 
 # Initialize and update submodules
 git submodule update --init
@@ -38,14 +39,20 @@ git submodule update --init
 # Build in release mode
 cargo build --release
 
+# Create .env file (if it doesn't exist)
+touch .env
+
 # Prompt user for miner key (wallet address)
-prompt_and_store_env "Enter your miner key (wallet address) where you want to receive rewards" "MINER_KEY (Press Enter After)"
+prompt_and_store_env "Enter your miner key (wallet address) where you want to receive rewards" "MINER_KEY (Press Enter When Done)"
+
+# Store other environment variables if needed
+# prompt_and_store_env "Enter another variable" "OTHER_VAR"
 
 # Navigate to 'run' directory
 cd run
 
 # Insert MINER_KEY into config.toml
-sed -i "s/miner_key = \"\"/miner_key = \"$MINER_KEY\"/" config.toml
+sed -i "s/miner_key = \"\"/miner_key = \"$(grep MINER_KEY ../.env | cut -d '=' -f2 | sed 's/\"//g')\"/" config.toml
 
 # Create systemd service file for zgs_node
 sudo tee /etc/systemd/system/zgs_node.service > /dev/null << EOF
@@ -57,6 +64,7 @@ After=network.target
 User=$USER
 Group=$(id -gn)
 WorkingDirectory=$(pwd)
+EnvironmentFile=$(pwd)/../.env
 ExecStart=$(pwd)/../target/release/zgs_node --config $(pwd)/config.toml
 Restart=always
 StandardOutput=syslog
