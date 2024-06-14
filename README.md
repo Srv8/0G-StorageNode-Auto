@@ -1,4 +1,4 @@
-# Project Name
+# 0G Storage Node setup Automated Script
 
 Automated setup script for configuring and running zgs_node on Ubuntu.
 
@@ -11,8 +11,8 @@ Automated setup script for configuring and running zgs_node on Ubuntu.
 
 1. Clone the repository:
 
-   git clone https://github.com/Srv8/0G-StorageNode-Auto
-   cd 0G-StorageNode-Auto
-   ./setup.sh
+git clone https://github.com/Srv8/0G-StorageNode-Auto
+cd 0G-StorageNode-Auto
+./setup.sh
 
-   You will be asked to enter your wallet. Make sure to enter your wallet and hit enter(key)
+You will be asked to enter your wallet. Make sure to enter your wallet and hit enter(key)
