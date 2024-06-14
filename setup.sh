@@ -39,7 +39,7 @@ git submodule update --init
 cargo build --release
 
 # Prompt user for miner key (wallet address)
-prompt_and_store_env "Enter your miner key (wallet address) where you want to receive rewards" "MINER_KEY"
+prompt_and_store_env "Enter your miner key (wallet address) where you want to receive rewards" "MINER_KEY (Press Enter After)"
 
 # Navigate to 'run' directory
 cd run
